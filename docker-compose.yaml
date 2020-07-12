@@ -143,8 +143,6 @@ services:
           "--eval",
           'rs.add( { host: "mongo1:27017"} );db.adminCommand( { replSetStepDown: 1,force:true } );',
         ]
-      #test: ["CMD","mongo","--host","mongo1","admin","-u","root","-p","pass.123",  "--eval", 'rs.add( { host: "mongotmp:27047"} );db.adminCommand({ "shutdown" : 1, "force" : true })']
-      #test: ["CMD","mongo","--host","mongo1","admin","-u","root","-p","pass.123",  "<","/data/js/final.js"]
       interval: 10s
       start_period: 40s
     command:
