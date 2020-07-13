@@ -7,8 +7,8 @@ services:
     volumes:
       - ./keyfile:/keyfile
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=pass.123
+      - MONGO_INITDB_ROOT_USERNAME=${username}
+      - MONGO_INITDB_ROOT_PASSWORD=${password}
     ports:
       - 27047:27047
     healthcheck:
@@ -20,11 +20,11 @@ services:
           "--port",
           "27047",
           "-u",
-          "root",
+          "${username}",
           "-p",
-          "pass.123",
+          "${password}",
           "--eval",
-          'rs.initiate( { _id : "rs0",members: [{ _id: 0,host: "mongotmp:27047" }]}) ; db.getSiblingDB("admin").createUser({user: "application",pwd: "pass.123",roles: [{role: "userAdminAnyDatabase",db:"admin"},{role: "clusterAdmin",db:"admin"}]})',
+          'rs.initiate( { _id : "rs0",members: [{ _id: 0,host: "mongotmp:27047" }]}) ; db.getSiblingDB("admin").createUser({user: "${username}",pwd: "${password}",roles: [{role: "userAdminAnyDatabase",db:"admin"},{role: "clusterAdmin",db:"admin"}]})',
         ]
       interval: 10s
       start_period: 10s
@@ -58,9 +58,9 @@ services:
           "27047",
           "admin",
           "-u",
-          "root",
+          "${username}",
           "-p",
-          "pass.123",
+          "${password}",
           "--eval",
           'rs.add( { host: "mongo2:27027"} )',
         ]
@@ -97,9 +97,9 @@ services:
           "27047",
           "admin",
           "-u",
-          "root",
+          "${username}",
           "-p",
-          "pass.123",
+          "${password}",
           "--eval",
           'rs.add( { host: "mongo3:27037"} )',
         ]
@@ -137,9 +137,9 @@ services:
           "27047",
           "admin",
           "-u",
-          "root",
+          "${username}",
           "-p",
-          "pass.123",
+          "${password}",
           "--eval",
           'rs.add( { host: "mongo1:27017"} );db.adminCommand( { replSetStepDown: 1,force:true } );',
         ]
@@ -161,7 +161,7 @@ services:
     depends_on:
       - mongo1
     healthcheck:
-      test: /usr/bin/mongo "mongodb://root:pass.123@mongo1:27017,mongo2:27027,mongo3:27037/admin?replicaSet=rs0" --eval 'rs.remove("mongotmp:27047")'
+      test: /usr/bin/mongo "mongodb://${username}:${password}@mongo1:27017,mongo2:27027,mongo3:27037/admin?replicaSet=rs0" --eval 'rs.remove("mongotmp:27047")'
       interval: 10s
       start_period: 45s
     command:
